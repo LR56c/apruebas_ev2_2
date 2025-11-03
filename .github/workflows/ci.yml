@@ -63,12 +63,13 @@ jobs:
         run: |
           LATENCY=$(jq -r '.metrics.http_req_duration."p(95)"' k6-summary.json || echo "0")ms
           TPS=$(jq -r '.metrics.http_reqs.rate' k6-summary.json || echo "0")/s
-          ERRORS=$(jq -r '.metrics.http_req_failed.value' k6-summary.json || echo "0")%
+          ERRORS=$(jq -r '(.metrics.http_req_failed.rate // 0) * 100' k6-summary.json)%
           echo "## 🚀 Reporte de Performance (Login API)" >> $GITHUB_STEP_SUMMARY
           echo "| Métrica Clave | Valor |" >> $GITHUB_STEP_SUMMARY
           echo "|---|---|" >> $GITHUB_STEP_SUMMARY
           echo "| **Latencia (p95)** | $LATENCY |" >> $GITHUB_STEP_SUMMARY
           echo "| **TPS (Rendimiento)** | $TPS |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Tasa de Errores** | $ERRORS |" >> $GITHUB_STEP_SUMMARY
 
 
       - name: Send Notification on Failure
