@@ -38,7 +38,7 @@ jobs:
           path: target/cucumber-reports/
 
       - name: Setup k6
-        uses: k6-io/setup-k6@v1
+        uses: grafana/setup-k6-action@v1
 
       - name: Run Spring Boot app and k6 Performance Test
         run: |
