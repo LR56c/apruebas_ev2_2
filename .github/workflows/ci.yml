@@ -42,7 +42,7 @@ jobs:
 
       - name: Run Spring Boot app and k6 Performance Test
         run: |
-          java -jar bdd-0.0.1-SNAPSHOT.jar &
+          java -jar target/bdd-0.0.1-SNAPSHOT.jar &
            echo "Waiting for Spring Boot to be healthy..."
           n=0
           until [ "$n" -ge 12 ]
