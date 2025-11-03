@@ -43,7 +43,19 @@ jobs:
       - name: Run Spring Boot app and k6 Performance Test
         run: |
           java -jar bdd-0.0.1-SNAPSHOT.jar &
-          sleep 15
+           echo "Waiting for Spring Boot to be healthy..."
+          n=0
+          until [ "$n" -ge 12 ]
+          do
+             curl -fs http://localhost:8080/actuator/health && break
+             n=$((n+1))
+             echo "  (Still waiting... attempt $n)"
+             sleep 5
+          done
+          if [ "$n" -ge 12 ]; then
+             echo "Server did not start in 60s. Failing build."
+             exit 1
+          fi
           k6 run login-test.js --summary-export=k6-summary.json
 
       - name: Generate Job Summary Dashboard
@@ -59,7 +71,7 @@ jobs:
           echo "| **TPS (Rendimiento)** | $TPS |" >> $GITHUB_STEP_SUMMARY
           echo "| **Tasa de Errores** | $ERRORS |" >> $GITHUB_STEP_SUMMARY
 
-      - name: Send Slack Notification on Failure
+      - name: Send Notification on Failure
         if: failure()
         run: |
           echo "¡ALERTA! El Build ha fallado."
