@@ -42,7 +42,7 @@ jobs:
 
       - name: Run Spring Boot app and k6 Performance Test
         run: |
-          java -jar target/bdd-1.0-SNAPSHOT.jar &
+          java -jar bdd-0.0.1-SNAPSHOT.jar &
           sleep 15
           k6 run login-test.js --summary-export=k6-summary.json
 
